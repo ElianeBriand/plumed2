@@ -371,6 +371,15 @@ bool PDB::readFromFilepointer(FILE *fp,bool naturalUnits,double scale) {
       residuenames.push_back(residuename);
     }
   }
+  // If sum of occupancy is 0.0, this causes problem with FIT routines
+  double sum_occupancy = 0.0;
+  for(std::vector<double>::size_type i = 0; i < occupancy.size(); i++) {
+    sum_occupancy += occupancy[i];
+  }
+  if( sum_occupancy == 0.0 ) {
+    plumed_merror("Sum of occupancy factor is 0.0. Relevant column may be missing from PDB." );
+  }
+  
   if( between_ters ) block_ends.push_back( positions.size() );
   return file_is_alive;
 }
